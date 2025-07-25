@@ -15,9 +15,4 @@ body {
     margin: 0;
 }
 
-@media (max-width: 600px) {
-  #board {
-    transform: scale(0.7);
-    transform-origin: top center;
-  }
-}
+
