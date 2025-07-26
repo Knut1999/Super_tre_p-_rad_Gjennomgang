@@ -1,5 +1,5 @@
 var canvas = document.querySelector('#board');
-var inner_firkant = 250;
+var inner_firkant = 220;
 var innerst_firkant = inner_firkant/3;
 
 canvas.width = inner_firkant * 3;
@@ -71,7 +71,8 @@ function tegn_X_O(){
       break;
     }
   }
-  c.font = "110px Verdana";
+  let fontSizeSmall = innerst_firkant*1.3;
+  c.font = `${fontSizeSmall}px Verdana`;
   
   if (bytte == true){
     c.fillText("X",x_position, y_position, innerst_firkant, innerst_firkant);
@@ -292,7 +293,8 @@ function check_list(liste_over_trekk_X_or_O_brett, true_false){
         win_mål_y = 2.98 * inner_firkant;
         win_mål_x = 2 * inner_firkant;
       }
-      c.font = "340px Verdana";
+      let fontSize_big = 4.1 * innerst_firkant;
+      c.font = `${fontSize_big}px Verdana`;
       c.fillStyle = "black"; 
       
       if(true_false == true){
