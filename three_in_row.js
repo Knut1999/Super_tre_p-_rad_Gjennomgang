@@ -1,5 +1,5 @@
 var canvas = document.querySelector('#board');
-var inner_firkant = window.innerWidth < 600 ? 10 : 240;
+var inner_firkant = window.innerWidth < 600 ? 90 : 240;
 var innerst_firkant = inner_firkant/3;
 
 canvas.width = inner_firkant * 3;
