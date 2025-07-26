@@ -23,12 +23,14 @@ body {
 
 @media (max-width: 600px) {
   h1 {
-    font-size: 4px;
+    font-size: 10px;
     color: black;
+    text-align: center;
   }
 
   h2 {
-    font-size: 1px;
+    font-size: 10px;
     color: black;
+    text-align: center;
   }
 }
