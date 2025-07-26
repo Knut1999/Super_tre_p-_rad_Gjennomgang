@@ -1,9 +1,10 @@
 
 h1 {
-    border-bottom: none;
+    border-bottom: 10px;
+
 }
 h2 {
-    border-bottom: none;
+    border-bottom: 10px;
 }
 
 #board {
