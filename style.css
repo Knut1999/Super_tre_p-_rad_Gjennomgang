@@ -34,3 +34,12 @@ body {
     text-align: center;
   }
 }
+pre {
+  white-space: pre-wrap;   /* bryt linjer på små skjermer */
+  word-wrap: break-word;   /* bryt lange ord */
+  overflow-x: auto;        /* legg til scroll hvis nødvendig */
+  background: #f5f5f5;     /* lys bakgrunn */
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;         /* litt mindre skrift */
+}
