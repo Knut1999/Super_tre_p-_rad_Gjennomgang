@@ -11,12 +11,68 @@
           content="High-performance HTML based website template."
         />
         <script src="three_in_row.js" defer></script>
+        <script src="three_in_row1.js" defer></script>
 
     </head>
     <body style="background-color:rgb(255, 255, 255);">
         <h1>Super 3 på rad, Gjennomgang ✖️⭕</h1>
         <canvas id = "board"></canvas>
-        <h2>https://www.youtube.com/shorts/_Na3a1ZrX7c</h2>
+        <h2>########################################</h2>
+        <!-- Under starter forklaring -->
+        
+         
+        <p style="color:rgba(255, 0, 0, 0.607); font-size:20px; font-weight:bold;">
+        Først må vi tegne brettet, det gjør vi med canvas.
+        </p>
+        <pre><code> 
+        
+        var canvas = document.querySelector('#board1');
+        </code></pre>
+        Her sier jeg at om det er mobil så skal sor firkant 
+        være 90 pixler stor, ellers, 240 pixler
+        <pre><code> 
+        var inner_firkant = window.innerWidth < 600 ? 90 : 240;
+        var innerst_firkant = inner_firkant/3;
+        // Definerer lengde og bredde på stor og liten firkant
+        canvas.width = inner_firkant * 3;
+        canvas.height = inner_firkant * 3;
+        var c = canvas.getContext('2d');
+
+        function tegn_brett(){
+        //innerfirkanter
+        c.lineWidth = 4; // tykkere linje
+        c.strokeRect(0,0,inner_firkant,inner_firkant);
+        c.strokeRect(inner_firkant,0,inner_firkant,inner_firkant);
+        c.strokeRect(inner_firkant*2,0,inner_firkant,inner_firkant);
+
+        c.strokeRect(0,inner_firkant,inner_firkant,inner_firkant);
+        c.strokeRect(inner_firkant,inner_firkant,inner_firkant,inner_firkant);
+        c.strokeRect(inner_firkant*2,inner_firkant,inner_firkant,inner_firkant);
+
+        c.strokeRect(0,inner_firkant*2,inner_firkant,inner_firkant);
+        c.strokeRect(inner_firkant,inner_firkant*2,inner_firkant,inner_firkant);
+        c.strokeRect(inner_firkant*2,inner_firkant*2,inner_firkant,inner_firkant);
+        //innerfirkanter
+
+        //innerst firkanter
+        //innså det over er dust, forloop mye bedre
+        c.lineWidth = 1;
+        for (var i = 0; i < 9; i++) {
+            for (var y = 0; y < 9; y++){
+            c.strokeRect(i*innerst_firkant, y*innerst_firkant, innerst_firkant, innerst_firkant)
+            }
+        }
+        console.log(canvas);
+        }
+        tegn_brett();
+        </code></pre>
+
+
+        <h1>Super 3 på rad, Gjennomgang ✖️⭕</h1>
+        <canvas id = "board1"></canvas>
+        <h2>########################################</h2>
     </body>
 </html>
+
+
 
