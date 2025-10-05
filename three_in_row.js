@@ -8,6 +8,7 @@ canvas.height = inner_firkant * 3;
 var c = canvas.getContext('2d');
 
 function tegn_brett(){
+  c.strokeStyle = "black";
   //innerfirkanter
   c.lineWidth = 4; // tykkere linje
   c.strokeRect(0,0,inner_firkant,inner_firkant);
@@ -31,7 +32,6 @@ function tegn_brett(){
       c.strokeRect(i*innerst_firkant, y*innerst_firkant, innerst_firkant, innerst_firkant)
     }
   }
-  console.log(canvas);
 }
 tegn_brett();
 
@@ -41,17 +41,32 @@ const mouse = {
   x: null, 
   y: null,
 }
-
-
+let useRules = true, useRed = true, useWin = true;
+const ruleEl = document.getElementById('ruleToggle');
+const redEl  = document.getElementById('redToggle');
+const winEl  = document.getElementById('winToggle');
 canvas.addEventListener("click", function(event){
+  //for å kunne huke av funksjoner
+  const useRules = ruleEl.checked;
+  const useRed   = redEl.checked;
+  const useWin   = winEl.checked;
+  
+  //finne og lagre det man trykker på i brettet
   const rect = canvas.getBoundingClientRect(); // får posisjon og størrelse på canvas
   mouse.x = event.x - rect.left;
   mouse.y = event.y - rect.top;
-  if (riktig_firkant()==false){
+
+  //finne et tall fra 1-9 på hvilken firkant man trykket i
+  stor_rute_nr = Stor_firkant_nr()
+
+  //finne et tall fra 1-9 på hvilken inner-firkant man trykket i
+  const {liten_rute_x, liten_rute_y} = liten_firkant_nr()
+  if (useRules && riktig_firkant(liten_rute_x, liten_rute_y, stor_rute_nr)==false){
     return;
   }
   tegn_X_O();
-  tre_paa_rad(bytte);
+  if (useRed) red_squere(liten_rute_x,liten_rute_y)
+  if (useWin) tre_paa_rad(bytte);
 });
 
 var bytte = true;
@@ -86,11 +101,9 @@ function tegn_X_O(){
 
 var put_overalt = false;
 var liten_rute_nr_prev = null;
-var liten_rute_x_before = null;
-var liten_rute_y_before = null;
 var store_firkanter_tatt = [];
 var all_moves_list = [];
-function riktig_firkant() {
+function Stor_firkant_nr() {
   
   var x_click = mouse.x;
   var y_click = mouse.y;
@@ -133,8 +146,17 @@ function riktig_firkant() {
     }
   }
   //over finner vi stor firkant, fra 1 til 9, under gjør vi det samme for de små som er inni
+  return stor_rute_nr
+}
   //under finner vi hvilken lille firkant som er trykket på
-
+var liten_rute_nr = null;
+function liten_firkant_nr(){
+  var x_click = mouse.x;
+  var y_click = mouse.y;
+  var rute_x = Math.floor(x_click/innerst_firkant);
+  rute_x++;
+  var rute_y = Math.floor(y_click/innerst_firkant);
+  rute_y++;
   //variabler til å vite om del-seier eller seier (om det trengs)
   //variabler som må lagres under
   var liten_rute_x = rute_x;
@@ -156,7 +178,6 @@ function riktig_firkant() {
   var liten_rute = [liten_rute_x, liten_rute_y];
 
   //under finner vi nummerene til de små rutene
-  var liten_rute_nr = null;
   for (var i = 1; i < 10; i++){
     for (var y = 1; y < 10; y++){
       if(liten_rute[0]==i && liten_rute[1]==y){
@@ -172,56 +193,7 @@ function riktig_firkant() {
       }
     }
   }
-
-  //
-  //lagrer til å vite når noe vinner under
-  liten_firkant_oversikt_x = liten_rute_nr;
-  stor_firkant_oversikt_x = stor_rute_nr;
-  //
-  c.strokeStyle = "black";
-  var sort_pa_vunnen_firkant = false;
-  for (var i = 0; i < store_firkanter_tatt.length; i++){
-    if(liten_rute_nr==store_firkanter_tatt[i]){
-      sort_pa_vunnen_firkant = true;
-    }
-  }
-
-  var all_moves = liten_rute_nr + 9*(stor_rute_nr-1);
-  if (put_overalt == false && liten_rute_nr_prev != null && stor_rute_nr != liten_rute_nr_prev || all_moves_list.includes(all_moves)){
-    check = false;
-    return check;
-  }
-
-  if (stor_rute_nr == liten_rute_nr_prev || liten_rute_nr_prev == null || put_overalt == true){
-    tegn_brett();
-    if (sort_pa_vunnen_firkant == false){
-      c.strokeStyle = "red";
-    }
-    c.lineWidth = 4; // tykkere linje
-    c.strokeRect((liten_rute_x-1)*inner_firkant,(liten_rute_y-1)*inner_firkant,inner_firkant,inner_firkant);
-  }
-  if (put_overalt == true){
-    if (store_firkanter_tatt.includes(stor_rute_nr)){
-      check = false;
-      c.strokeStyle = "black";
-      tegn_brett();
-      return check;
-    }
-  }
-  put_overalt = false; 
-  for (var i = 0; i < store_firkanter_tatt.length; i++){
-    if(liten_rute_nr==store_firkanter_tatt[i]){
-      put_overalt = true;
-      break;
-    }
-  }
-
-  // all_moves_list brukes slik at vi ikke legger to oppå hverandre
-  
-  all_moves_list.push(all_moves);
-  liten_rute_nr_prev = liten_rute_nr;
-  liten_rute_x_before = liten_rute_x;
-  liten_rute_y_before = liten_rute_y;
+  return {liten_rute_x, liten_rute_y}
 }
 
 //vite hvem som vinner hvor under
@@ -230,6 +202,36 @@ var stor_firkant_oversikt_x;
 var liste_over_trekk_X_brett = [];
 var liste_over_trekk_O_brett = [];
 var liste_over_alle_trekk = [];
+function riktig_firkant(liten_rute_x, liten_rute_y, stor_rute_nr) {
+  //
+  //lagrer til å vite når noe vinner under
+  liten_firkant_oversikt_x = liten_rute_nr;
+  stor_firkant_oversikt_x = stor_rute_nr;
+  //
+
+  var all_moves = liten_rute_nr + 9*(stor_rute_nr-1); //setter inn tall mellom 0 - 80, siden det er 81 mindre firkanter x/o som ble lagt
+  if (put_overalt == false && liten_rute_nr_prev != null && stor_rute_nr != liten_rute_nr_prev || all_moves_list.includes(all_moves)){
+    check = false;
+    return check;
+  }
+
+  // if (stor_rute_nr == liten_rute_nr_prev || liten_rute_nr_prev == null || put_overalt == true){
+  //   tegn_brett();
+  // }
+
+  if (put_overalt == true){
+    if (store_firkanter_tatt.includes(stor_rute_nr)){
+      check = false;
+      c.strokeStyle = "black";
+      tegn_brett();
+      return check;
+    }
+  }
+
+  // all_moves_list brukes slik at vi ikke legger to oppå hverandre
+  all_moves_list.push(all_moves);
+  liten_rute_nr_prev = liten_rute_nr;
+}
 
 //både funksjon tre_paa_rad og check_list funker, men de er ikke bra og ganske så umulige å forstå. burde tenkt fra start at funksjonen under skal funke med x og o, but life is life
 function tre_paa_rad(true_false){
@@ -326,10 +328,10 @@ function check_list(liste_over_trekk_X_or_O_brett, true_false){
           }
         }
       }
-      if (if_loop(store_firkanter_tatt_x) == true){
+      if (seier(store_firkanter_tatt_x) == true){
         setTimeout(() => alert("X vant!"), 50);
       }
-      else if(if_loop(store_firkanter_tatt_o) == true){
+      else if(seier(store_firkanter_tatt_o) == true){
         setTimeout(() => alert("O vant!"), 50);
       }
     }
@@ -337,7 +339,7 @@ function check_list(liste_over_trekk_X_or_O_brett, true_false){
 );
 }
 
-function if_loop(liste){
+function seier(liste){
   var check = false;
   if(liste.includes(1) && liste.includes(2) && liste.includes(3) ||
     liste.includes(4) && liste.includes(5) && liste.includes(6) ||
@@ -358,7 +360,6 @@ function fullt_brett(liste_over_trekk_X_or_O_brett){
     liste_over_trekk_X_or_O_brett.forEach(x => {
       
     if(x[0] == stor_firkant_oversikt_x){
-      console.log(x);
       all_trekk_i_firkant.push(x[1]);
       if (all_trekk_i_firkant.includes(1) && all_trekk_i_firkant.includes(2) && all_trekk_i_firkant.includes(3) &&
       all_trekk_i_firkant.includes(4) && all_trekk_i_firkant.includes(5) && all_trekk_i_firkant.includes(6) &&
@@ -377,3 +378,20 @@ function fullt_brett(liste_over_trekk_X_or_O_brett){
     }
   }
 )}
+
+function red_squere(liten_rute_x,liten_rute_y){
+  tegn_brett()
+  var sort_pa_vunnen_firkant = false;
+  //sjekker om den store firkanten er tatt siden da ønsker vi ikke en rød firkant
+  for (var i = 0; i < store_firkanter_tatt.length; i++){
+    if(liten_rute_nr==store_firkanter_tatt[i]){
+      sort_pa_vunnen_firkant = true;
+    }
+  }
+  if (sort_pa_vunnen_firkant == false){
+    c.strokeStyle = "red";
+  }
+  c.lineWidth = 4; // tykkere linje
+  c.strokeRect((liten_rute_x-1)*inner_firkant,(liten_rute_y-1)*inner_firkant,inner_firkant,inner_firkant);
+
+}

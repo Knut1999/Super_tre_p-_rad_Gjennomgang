@@ -34,13 +34,6 @@ body {
     text-align: center;
   }
 }
-code {
-  color: black;         /* eller en tydelig farge */
-  font-size: 14px;      /* juster for mobilvennlig størrelse */
-  background: #f5f5f5;  /* lys bakgrunn */
-  padding: 2px 4px;
-  border-radius: 4px;
-}
 
 pre {
   white-space: pre-wrap;   /* bryt linjer på små skjermer */
